@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#f5c842">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Bletchley Park">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bletchley Park</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bebas+Neue&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a26;
+    --border: #2a2a40;
+    --accent: #f5c842;
+    --accent2: #a855f7;
+    --text: #e8e8f0;
+    --muted: #6b6b8a;
+    --success: #22c55e;
+    --danger: #ef4444;
+    --info: #3b82f6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-shadow: 0 0 20px rgba(245,200,66,0.4);
+  }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  /* LANGUAGE TOGGLE */
+  .lang-toggle {
+    display: flex;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .lang-btn {
+    padding: 6px 14px;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: Inter;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .lang-btn.active { background: var(--accent); color: #000; }
+  .lang-btn:not(.active):hover { color: var(--text); background: var(--surface2); }
+
+  .tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .tab {
+    padding: 7px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: Inter;
+  }
+  .tab:hover { border-color: var(--accent); color: var(--accent); }
+  .tab.active { background: var(--accent); color: #000; border-color: var(--accent); }
+
+  main { display: flex; flex: 1; gap: 0; }
+
+  .left-panel {
+    width: 320px;
+    min-width: 260px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    overflow-y: auto;
+  }
+  .right-panel {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .word-input-area { display: flex; flex-direction: column; gap: 10px; }
+  .word-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    text-align: center;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-family: 'Inter';
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .word-input:focus { border-color: var(--accent); }
+  .word-input::placeholder { color: var(--muted); font-size: 13px; letter-spacing: 1px; font-weight: 400; }
+
+  .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .cat-btn {
+    padding: 8px 6px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    line-height: 1.3;
+    font-family: Inter;
+  }
+  .cat-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+  .cat-btn.selected { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+
+  .analyze-btn {
+    width: 100%;
+    padding: 13px;
+    border-radius: 10px;
+    background: var(--accent);
+    color: #000;
+    font-weight: 700;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: Inter;
+    letter-spacing: 0.5px;
+  }
+  .analyze-btn:hover { background: #f0b800; transform: translateY(-1px); }
+  .analyze-btn:active { transform: translateY(0); }
+
+  .reset-btn {
+    width: 100%;
+    padding: 9px;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--muted);
+    font-size: 12px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: Inter;
+  }
+  .reset-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+  .analysis-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+  .analysis-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+  .analysis-card .card-title { font-size: 10px; font-weight: 600; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; }
+  .analysis-card .card-value { font-size: 28px; font-weight: 700; color: var(--accent); font-family: 'Bebas Neue'; letter-spacing: 2px; }
+  .analysis-card .card-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  .passcode-display { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .passcode-title { font-size: 10px; font-weight: 600; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 16px; }
+  .passcode-digits { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .passcode-digit { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .digit-box {
+    width: 52px; height: 64px;
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; font-weight: 700; color: var(--accent);
+    font-family: 'Bebas Neue';
+  }
+  .digit-box.active { border-color: var(--accent); box-shadow: 0 0 12px rgba(245,200,66,0.3); }
+  .digit-label { font-size: 9px; color: var(--muted); text-align: center; max-width: 56px; line-height: 1.3; }
+
+  .binary-display { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .binary-seq { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; justify-content: center; }
+  .binary-letter { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .binary-badge { width: 44px; height: 44px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; font-family: 'Bebas Neue'; }
+  .binary-badge.V { background: rgba(168,85,247,0.2); color: #a855f7; border: 1px solid #a855f7; }
+  .binary-badge.C { background: rgba(59,130,246,0.2); color: #3b82f6; border: 1px solid #3b82f6; }
+  .binary-ab { font-size: 11px; font-weight: 700; color: var(--muted); }
+  .binary-char { font-size: 11px; color: var(--muted); letter-spacing: 1px; }
+
+  .voice-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .voice-sentence {
+    font-size: 17px; font-style: italic; color: var(--text);
+    line-height: 1.6; text-align: center; padding: 14px;
+    background: var(--surface2); border-radius: 8px; margin-top: 10px;
+  }
+  .voice-sentence .number-highlight { color: var(--accent); font-weight: 700; font-style: normal; }
+
+  .shape-display { display: flex; gap: 10px; margin-top: 10px; justify-content: center; flex-wrap: wrap; }
+  .shape-pill {
+    padding: 10px 20px; border-radius: 30px; border: 2px solid var(--border);
+    font-size: 13px; font-weight: 600; color: var(--muted); background: var(--surface2); transition: all 0.2s;
+  }
+  .shape-pill.active-1 { border-color: #3b82f6; color: #3b82f6; background: rgba(59,130,246,0.15); }
+  .shape-pill.active-2 { border-color: var(--accent); color: var(--accent); background: rgba(245,200,66,0.12); }
+  .shape-pill.active-3 { border-color: #a855f7; color: #a855f7; background: rgba(168,85,247,0.15); }
+
+  .breakdown-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+  .breakdown-table th { background: var(--surface2); color: var(--muted); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+  .breakdown-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--text); }
+  .breakdown-table tr:last-child td { border-bottom: none; }
+  .breakdown-table tr:hover td { background: var(--surface2); }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .tag-v { background: rgba(168,85,247,0.2); color: #a855f7; }
+  .tag-c { background: rgba(59,130,246,0.2); color: #3b82f6; }
+
+  .quiz-area { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+  .quiz-question { font-size: 16px; color: var(--text); font-weight: 500; line-height: 1.6; }
+  .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .quiz-opt {
+    padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border);
+    background: var(--surface2); color: var(--text); font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: all 0.2s; font-family: Inter; text-align: left;
+  }
+  .quiz-opt:hover { border-color: var(--accent2); color: var(--accent2); }
+  .quiz-opt.correct { border-color: var(--success); background: rgba(34,197,94,0.15); color: var(--success); }
+  .quiz-opt.wrong { border-color: var(--danger); background: rgba(239,68,68,0.12); color: var(--danger); }
+  .quiz-opt:disabled { cursor: default; }
+
+  .feedback-box { padding: 12px 16px; border-radius: 10px; font-size: 14px; font-weight: 500; display: none; }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: rgba(34,197,94,0.15); color: var(--success); border: 1px solid rgba(34,197,94,0.3); }
+  .feedback-box.err { background: rgba(239,68,68,0.12); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
+
+  .next-btn {
+    padding: 11px 24px; border-radius: 8px; background: var(--accent);
+    color: #000; font-weight: 700; font-size: 13px; border: none;
+    cursor: pointer; transition: all 0.2s; font-family: Inter; align-self: flex-start; display: none;
+  }
+  .next-btn.show { display: block; }
+  .next-btn:hover { background: #f0b800; }
+
+  .score-bar { display: flex; align-items: center; gap: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 20px; }
+  .score-stat { text-align: center; }
+  .score-num { font-size: 24px; font-weight: 700; color: var(--accent); font-family: 'Bebas Neue'; }
+  .score-lbl { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+  .score-sep { width: 1px; height: 36px; background: var(--border); }
+
+  .placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 60px 20px; color: var(--muted); text-align: center; }
+  .placeholder-icon { font-size: 48px; }
+  .placeholder-text { font-size: 15px; line-height: 1.6; max-width: 340px; }
+
+  .info-tip { display: inline-block; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--muted); line-height: 1.6; margin-top: 6px; }
+  .info-tip strong { color: var(--accent); }
+
+  .vowel-positions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .pos-badge {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; border: 2px solid var(--border);
+    color: var(--muted); font-family: 'Bebas Neue';
+  }
+  .pos-badge.is-vowel { border-color: #a855f7; background: rgba(168,85,247,0.18); color: #a855f7; }
+
+  @media (max-width: 700px) {
+    main { flex-direction: column; }
+    .left-panel { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+    .analysis-grid { grid-template-columns: 1fr 1fr; }
+    .quiz-options { grid-template-columns: 1fr; }
+    .header-right { width: 100%; }
+  }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">ENIGMA <span style="color:var(--accent)">✦</span> TRAINER</div>
+    <div id="header-sub" style="font-size:11px;color:var(--muted);margin-top:2px;"></div>
+  </div>
+  <div class="header-right">
+    <!-- LANGUAGE TOGGLE -->
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="langEN" onclick="setLang('en')">🇬🇧 EN</button>
+      <button class="lang-btn" id="langDE" onclick="setLang('de')">🇩🇪 DE</button>
+    </div>
+    <!-- MODE TABS -->
+    <div class="tabs">
+      <button class="tab active" onclick="setMode('analyze')" id="tab-analyze"></button>
+      <button class="tab" onclick="setMode('quiz')" id="tab-quiz"></button>
+      <button class="tab" onclick="setMode('drill')" id="tab-drill"></button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <div class="word-input-area">
+      <div class="section-label" id="lbl-enter-word"></div>
+      <input class="word-input" id="wordInput" type="text" maxlength="30" oninput="onWordChange()" />
+      <div id="liveLetterCount" style="text-align:center;font-size:12px;color:var(--muted);min-height:16px;"></div>
+    </div>
+
+    <div>
+      <div class="section-label" id="lbl-category"></div>
+      <div class="category-grid" id="categoryGrid"></div>
+    </div>
+
+    <button class="analyze-btn" id="analyzeBtn" onclick="analyzeWord()"></button>
+    <button class="reset-btn" id="resetBtn" onclick="resetAll()"></button>
+
+    <div id="shortcutTip" class="info-tip hidden"></div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel" id="rightPanel">
+
+    <div class="placeholder" id="placeholder">
+      <div class="placeholder-icon">🔮</div>
+      <div class="placeholder-text" id="placeholder-text"></div>
+    </div>
+
+    <!-- ANALYZE OUTPUT -->
+    <div id="analyzeOutput" class="hidden">
+      <div class="analysis-grid" id="statCards"></div>
+      <div class="passcode-display">
+        <div class="passcode-title" id="passcode-title"></div>
+        <div class="passcode-digits" id="passcodeDigits"></div>
+        <div class="info-tip" style="margin-top:14px;display:block;">
+          <span id="passcode-hint-label"></span>: <strong id="passcodeString" style="font-size:16px;letter-spacing:4px;"></strong>
+        </div>
+      </div>
+      <div class="binary-display">
+        <div class="passcode-title" id="binary-title"></div>
+        <div class="binary-seq" id="binarySeq"></div>
+        <div class="info-tip" style="margin-top:14px;display:block;">
+          <span id="bin-seq-label"></span>: <strong id="binaryString"></strong> &nbsp;|&nbsp; <span id="bin-start-label"></span>: <strong id="binaryStart"></strong>
+        </div>
+      </div>
+      <div class="voice-box">
+        <div class="passcode-title" id="voice-title"></div>
+        <div class="voice-sentence" id="voiceSentence"></div>
+        <div class="info-tip" style="margin-top:10px;display:block;" id="voice-hint"></div>
+      </div>
+      <div class="passcode-display">
+        <div class="passcode-title" id="shape-title"></div>
+        <div class="shape-display" id="shapeDisplay"></div>
+        <div class="info-tip" style="margin-top:10px;display:block;" id="shape-hint"></div>
+      </div>
+      <div class="passcode-display">
+        <div class="passcode-title" id="vowel-title"></div>
+        <div class="vowel-positions" id="vowelPositions"></div>
+        <div class="info-tip" style="margin-top:10px;display:block;" id="vowel-hint"></div>
+      </div>
+      <div class="passcode-display">
+        <div class="passcode-title" id="breakdown-title"></div>
+        <table class="breakdown-table">
+          <thead id="breakdownHead"></thead>
+          <tbody id="breakdownBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- QUIZ OUTPUT -->
+    <div id="quizOutput" class="hidden">
+      <div class="score-bar">
+        <div class="score-stat"><div class="score-num" id="qScore">0</div><div class="score-lbl" id="lbl-score"></div></div>
+        <div class="score-sep"></div>
+        <div class="score-stat"><div class="score-num" id="qTotal">0</div><div class="score-lbl" id="lbl-total"></div></div>
+        <div class="score-sep"></div>
+        <div class="score-stat"><div class="score-num" id="qStreak">0</div><div class="score-lbl" id="lbl-streak"></div></div>
+        <div style="margin-left:auto;">
+          <button class="reset-btn" id="newQuestionBtn" onclick="randomQuiz()" style="padding:8px 18px;width:auto;"></button>
+        </div>
+      </div>
+      <div class="quiz-area" id="quizArea">
+        <div class="placeholder">
+          <div class="placeholder-icon">🧠</div>
+          <div class="placeholder-text" id="quiz-placeholder-text"></div>
+        </div>
+      </div>
+      <button class="analyze-btn" onclick="randomQuiz()" style="max-width:260px;" id="randomQuizBtn"></button>
+    </div>
+
+    <!-- DRILL OUTPUT -->
+    <div id="drillOutput" class="hidden">
+      <div class="score-bar">
+        <div class="score-stat"><div class="score-num" id="dScore">0</div><div class="score-lbl" id="lbl-correct"></div></div>
+        <div class="score-sep"></div>
+        <div class="score-stat"><div class="score-num" id="dTotal">0</div><div class="score-lbl" id="lbl-dtotal"></div></div>
+        <div style="margin-left:auto;">
+          <button class="reset-btn" id="resetDrillBtn" onclick="resetDrill()" style="padding:8px 18px;width:auto;"></button>
+        </div>
+      </div>
+      <div class="quiz-area" id="drillArea">
+        <div class="placeholder">
+          <div class="placeholder-icon">⚡</div>
+          <div class="placeholder-text" id="drill-placeholder-text"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="analyze-btn" id="checkDrillBtn" onclick="drillCheck()" style="max-width:220px;"></button>
+        <button class="reset-btn" id="randomDrillBtn" onclick="randomDrill()" style="padding:13px 20px;width:auto;"></button>
+      </div>
+      <div class="passcode-display" id="drillEntry">
+        <div class="passcode-title" id="drill-guess-title"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
+          <input id="d1" class="word-input" maxlength="1" style="width:52px;height:64px;font-size:24px;padding:4px;" placeholder="?" />
+          <input id="d2" class="word-input" maxlength="1" style="width:52px;height:64px;font-size:24px;padding:4px;" placeholder="?" />
+          <input id="d3" class="word-input" maxlength="1" style="width:52px;height:64px;font-size:24px;padding:4px;" placeholder="?" />
+          <input id="d4" class="word-input" maxlength="1" style="width:52px;height:64px;font-size:24px;padding:4px;" placeholder="?" />
+          <input id="d5" class="word-input" maxlength="1" style="width:52px;height:64px;font-size:24px;padding:4px;" placeholder="?" />
+          <input id="d6" class="word-input" maxlength="1" style="width:52px;height:64px;font-size:24px;padding:4px;" placeholder="?" />
+        </div>
+        <div class="info-tip" style="display:block;margin-top:12px;" id="drill-entry-hint"></div>
+        <div id="drillFeedback" class="feedback-box" style="margin-top:10px;"></div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+// ===================== LANGUAGE DATA =====================
+const LANG = {
+  en: {
+    headerSub: 'Practice Tool — All Input Modes',
+    tabAnalyze: '🔍 Word Analyzer',
+    tabQuiz: '🧠 Quiz Mode',
+    tabDrill: '⚡ Drill Mode',
+    lblEnterWord: 'Enter a word to analyse',
+    wordPlaceholder: 'e.g. ELEPHANT',
+    lblCategory: 'Category',
+    analyzeBtn: '▶ ANALYZE WORD',
+    resetBtn: '↺ Reset Everything',
+    shortcutTip: '<strong>Tip:</strong> Press <kbd style="background:var(--border);padding:1px 5px;border-radius:4px;font-size:11px">Enter</kbd> to analyze instantly.',
+    placeholderText: 'Enter any word on the left and press <strong style="color:var(--accent)">Analyze</strong> to see all Enigma parameters — Passcode, Binary Sequence, Voice Input, Letter Shape, and more.',
+    categories: ['🌍 Countries','🐾 Animals','🏔️ Natural – Big','🍃 Natural – Small','🏗️ Man-made – Big','🎸 Man-made – Small','🌈 Mixed Combo','📚 Long Words'],
+    passcodeTitle: '📱 Passcode Input — 6-Digit Code',
+    passcodeHintLabel: 'Enter this code into the fake lock screen',
+    binaryTitle: '🔵 Binary Input Sequence (Consonant / Vowel)',
+    binSeqLabel: 'Tap sequence',
+    binStartLabel: 'Pattern starts with',
+    voiceTitle: '🎙️ Voice Input — Example Sentence',
+    voiceHint: 'The <strong>number</strong> in the sentence is spoken naturally to trigger the app — without touching the phone.',
+    shapeTitle: '🔷 First Letter Shape',
+    shapeHint: '<strong>1</strong> = All straight lines &nbsp;|&nbsp; <strong>2</strong> = Mix of straight + curved &nbsp;|&nbsp; <strong>3</strong> = Only curved',
+    vowelTitle: '🔤 Vowel Positions (Ascending)',
+    vowelHint: 'Enter the <strong>positions</strong> of vowels (A E I O U) in ascending order. Usually only first 2 are needed.',
+    breakdownTitle: '📊 Letter-by-Letter Breakdown',
+    breakdownCols: ['#','Letter','Type','Position','AB'],
+    cardLetters: 'Letters in Word', cardFirst: 'First Letter', cardVowels: 'Vowels in Word', cardPasscode: 'Full Passcode',
+    cardLettersSub: (n,d) => `Digit 1 input: <strong style="color:var(--accent)">${d}</strong>`,
+    cardFirstSub: (s,name) => `Shape code: <strong style="color:var(--accent)">${s}</strong> — ${name}`,
+    cardVowelsSub: (pos) => `Positions: <strong style="color:var(--accent)">${pos}</strong>`,
+    cardPasscodeSub: '6-digit input sequence',
+    digitLabels: ['# of Letters','Shape of 1st letter','Vowel pos. 1','Vowel pos. 2','Vowel pos. 3','Extra (0)'],
+    shapeNames: {1:'Straight Lines', 2:'Mix (Straight + Curved)', 3:'Only Curved'},
+    shapePills: {1:'⏐ Straight', 2:'⬛ Mix', 3:'◯ Curved'},
+    shapePillSub: c => `(Code: ${c})`,
+    vowelPosSuffix: (list) => `Vowel positions: <strong style="color:#a855f7">${list.join(' → ')}</strong>`,
+    tagVowel: 'Vowel', tagConsonant: 'Consonant',
+    voiceTemplates: [
+      'Hmm… there are over {n} thousand words in the English language… and you\'re thinking of one of them.',
+      'You know, in just {n} seconds the human brain processes incredible amounts of information…',
+      'Studies show that {n} percent of people underestimate their own intuition.',
+      'Fascinating… there are roughly {n} possible combinations here.',
+      'I keep coming back to the number {n}… it feels significant somehow.',
+    ],
+    // QUIZ
+    lblScore: 'Score', lblTotal: 'Total', lblStreak: 'Streak',
+    newQuestionBtn: 'New Question',
+    randomQuizBtn: '🎲 Random Quiz Question',
+    quizPlaceholder: 'Switch to <strong style="color:var(--accent)">Quiz Mode</strong> and enter a word on the left, then press Analyze — or use the button below to get a random quiz question.',
+    quizQ1: (word, d1) => `The word is <strong>${word}</strong>. What is the FIRST digit of the passcode (number of letters)?`,
+    quizQ1Explain: (word, d1) => `"${word}" has ${word.length} letters → digit 1 = <strong>${d1}</strong>`,
+    quizQ2: (word) => `The word is <strong>${word}</strong>. What is the SHAPE code of the first letter <strong>${word[0]}</strong>?`,
+    quizQ2Explain: (word, sc, sn) => `"${word[0]}" shape code = <strong>${sc}</strong> (${sn})`,
+    quizQ3: (word) => `What is the BINARY sequence for <strong>${word}</strong>?<br><small style="color:var(--muted)">(C=Consonant, V=Vowel → encode as A or B where A=first type encountered)</small>`,
+    quizQ3Explain: (vc, ab) => `Binary: <strong>${vc}</strong> → AB: <strong>${ab}</strong>`,
+    quizQ4: (word) => `What are the VOWEL POSITIONS (ascending) in <strong>${word}</strong>?`,
+    quizQ4Explain: (word, pos) => `Vowels in "${word}": positions <strong>${pos}</strong>`,
+    quizQ5: (word) => `Is the first letter of <strong>${word}</strong> a vowel or consonant?`,
+    quizQ5Explain: (letter, type) => `"${letter}" is a <strong>${type}</strong>`,
+    answerVowel: 'Vowel', answerConsonant: 'Consonant',
+    feedbackCorrect: (explain) => `✅ Correct! ${explain}`,
+    feedbackWrong: (explain) => `❌ Not quite. ${explain}`,
+    nextBtn: 'Next Question →',
+    // DRILL
+    lblCorrect: 'Correct', lblDTotal: 'Total',
+    resetDrillBtn: 'Reset Score',
+    checkDrillBtn: '✓ Check My Answer',
+    randomDrillBtn: '🎲 Random Word',
+    drillPlaceholder: 'In <strong style="color:var(--accent)">Drill Mode</strong>, enter any word and try to calculate the passcode yourself — then press Analyze to check your answer!',
+    drillGuessTitle: 'Your Passcode Guess',
+    drillEntryHint: 'Enter your guessed passcode digits above, then click <strong>Check My Answer</strong>.',
+    drillPrompt: (word) => `Word: <span style="color:var(--accent);letter-spacing:3px;font-size:22px;">${word}</span>`,
+    drillPromptSub: 'Calculate the 6-digit passcode, enter it below, then click Check My Answer.',
+    drillCorrect: (code) => `✅ Correct! Passcode <strong>${code}</strong> is right!`,
+    drillWrong: (guess, correct) => `❌ Your guess: <strong>${guess||'(empty)'}</strong> — Correct: <strong>${correct}</strong>. Switch to Analyze mode to see why.`,
+    letterCount: (n) => `${n} letter${n!==1?'s':''}`,
+  },
+  de: {
+    headerSub: 'Übungs-Tool — Alle Eingabe-Modi',
+    tabAnalyze: '🔍 Wort-Analyse',
+    tabQuiz: '🧠 Quiz-Modus',
+    tabDrill: '⚡ Drill-Modus',
+    lblEnterWord: 'Wort eingeben',
+    wordPlaceholder: 'z.B. ELEFANT',
+    lblCategory: 'Kategorie',
+    analyzeBtn: '▶ WORT ANALYSIEREN',
+    resetBtn: '↺ Alles zurücksetzen',
+    shortcutTip: '<strong>Tipp:</strong> Drücke <kbd style="background:var(--border);padding:1px 5px;border-radius:4px;font-size:11px">Enter</kbd> zur sofortigen Analyse.',
+    placeholderText: 'Gib links ein Wort ein und drücke <strong style="color:var(--accent)">Analysieren</strong>, um alle Enigma-Parameter zu sehen — Passcode, Binärsequenz, Spracheingabe, Buchstabenform u.v.m.',
+    categories: ['🌍 Länder','🐾 Tiere','🏔️ Natur – Groß','🍃 Natur – Klein','🏗️ Menschgemacht – Groß','🎸 Menschgemacht – Klein','🌈 Gemischt','📚 Lange Wörter'],
+    passcodeTitle: '📱 Passcode-Eingabe — 6-Stelliger Code',
+    passcodeHintLabel: 'Diesen Code in den gefälschten Sperrbildschirm eingeben',
+    binaryTitle: '🔵 Binärsequenz (Konsonant / Vokal)',
+    binSeqLabel: 'Tipp-Sequenz',
+    binStartLabel: 'Muster beginnt mit',
+    voiceTitle: '🎙️ Spracheingabe — Beispielsatz',
+    voiceHint: 'Die <strong>Zahl</strong> im Satz wird natürlich gesprochen, um die App auszulösen — ohne das Telefon zu berühren.',
+    shapeTitle: '🔷 Form des ersten Buchstabens',
+    shapeHint: '<strong>1</strong> = Nur gerade Linien &nbsp;|&nbsp; <strong>2</strong> = Gerade + geschwungen &nbsp;|&nbsp; <strong>3</strong> = Nur geschwungen',
+    vowelTitle: '🔤 Vokalposition (aufsteigend)',
+    vowelHint: 'Die <strong>Positionen</strong> der Vokale (A E I O U) aufsteigend eingeben. Meistens nur die ersten 2 nötig.',
+    breakdownTitle: '📊 Buchstabe-für-Buchstabe-Analyse',
+    breakdownCols: ['#','Buchstabe','Typ','Position','AB'],
+    cardLetters: 'Buchstaben im Wort', cardFirst: 'Erster Buchstabe', cardVowels: 'Vokale im Wort', cardPasscode: 'Vollständiger Passcode',
+    cardLettersSub: (n,d) => `Ziffer 1 Eingabe: <strong style="color:var(--accent)">${d}</strong>`,
+    cardFirstSub: (s,name) => `Formcode: <strong style="color:var(--accent)">${s}</strong> — ${name}`,
+    cardVowelsSub: (pos) => `Positionen: <strong style="color:var(--accent)">${pos}</strong>`,
+    cardPasscodeSub: '6-stellige Eingabesequenz',
+    digitLabels: ['Anzahl Buchstaben','Form 1. Buchstabe','Vokalpos. 1','Vokalpos. 2','Vokalpos. 3','Extra (0)'],
+    shapeNames: {1:'Nur gerade Linien', 2:'Gerade + Geschwungen', 3:'Nur Geschwungen'},
+    shapePills: {1:'⏐ Gerade', 2:'⬛ Mix', 3:'◯ Geschwungen'},
+    shapePillSub: c => `(Code: ${c})`,
+    vowelPosSuffix: (list) => `Vokal-Positionen: <strong style="color:#a855f7">${list.join(' → ')}</strong>`,
+    tagVowel: 'Vokal', tagConsonant: 'Konsonant',
+    voiceTemplates: [
+      'Hmm… es gibt über {n} tausend Wörter im Deutschen… und du denkst gerade an eines davon.',
+      'Wusstest du, dass das menschliche Gehirn in nur {n} Sekunden unglaubliche Mengen an Informationen verarbeitet?',
+      'Studien zeigen, dass {n} Prozent der Menschen ihre eigene Intuition unterschätzen.',
+      'Faszinierend… es gibt ungefähr {n} mögliche Kombinationen.',
+      'Ich komme immer wieder zur Zahl {n} zurück… sie fühlt sich bedeutsam an.',
+    ],
+    // QUIZ
+    lblScore: 'Punkte', lblTotal: 'Gesamt', lblStreak: 'Serie',
+    newQuestionBtn: 'Neue Frage',
+    randomQuizBtn: '🎲 Zufällige Quizfrage',
+    quizPlaceholder: 'Wechsle in den <strong style="color:var(--accent)">Quiz-Modus</strong>, gib links ein Wort ein und drücke Analysieren — oder nutze die Schaltfläche unten für eine zufällige Frage.',
+    quizQ1: (word, d1) => `Das Wort lautet <strong>${word}</strong>. Was ist die ERSTE Passcode-Ziffer (Anzahl der Buchstaben)?`,
+    quizQ1Explain: (word, d1) => `„${word}" hat ${word.length} Buchstaben → Ziffer 1 = <strong>${d1}</strong>`,
+    quizQ2: (word) => `Das Wort lautet <strong>${word}</strong>. Was ist der FORMCODE des ersten Buchstabens <strong>${word[0]}</strong>?`,
+    quizQ2Explain: (word, sc, sn) => `Formcode von „${word[0]}" = <strong>${sc}</strong> (${sn})`,
+    quizQ3: (word) => `Was ist die BINÄRSEQUENZ für <strong>${word}</strong>?<br><small style="color:var(--muted)">(K=Konsonant, V=Vokal → als A oder B kodieren, A=erster vorkommender Typ)</small>`,
+    quizQ3Explain: (vc, ab) => `Binär: <strong>${vc}</strong> → AB: <strong>${ab}</strong>`,
+    quizQ4: (word) => `Welche VOKALPOSITIONEN (aufsteigend) hat <strong>${word}</strong>?`,
+    quizQ4Explain: (word, pos) => `Vokale in „${word}": Positionen <strong>${pos}</strong>`,
+    quizQ5: (word) => `Ist der erste Buchstabe von <strong>${word}</strong> ein Vokal oder Konsonant?`,
+    quizQ5Explain: (letter, type) => `„${letter}" ist ein <strong>${type}</strong>`,
+    answerVowel: 'Vokal', answerConsonant: 'Konsonant',
+    feedbackCorrect: (explain) => `✅ Richtig! ${explain}`,
+    feedbackWrong: (explain) => `❌ Nicht ganz. ${explain}`,
+    nextBtn: 'Nächste Frage →',
+    // DRILL
+    lblCorrect: 'Richtig', lblDTotal: 'Gesamt',
+    resetDrillBtn: 'Punkte zurücksetzen',
+    checkDrillBtn: '✓ Antwort prüfen',
+    randomDrillBtn: '🎲 Zufälliges Wort',
+    drillPlaceholder: 'Im <strong style="color:var(--accent)">Drill-Modus</strong> ein Wort eingeben, den Passcode selbst berechnen und dann überprüfen lassen!',
+    drillGuessTitle: 'Dein Passcode-Tipp',
+    drillEntryHint: 'Gib deine Passcode-Ziffern oben ein, dann klicke auf <strong>Antwort prüfen</strong>.',
+    drillPrompt: (word) => `Wort: <span style="color:var(--accent);letter-spacing:3px;font-size:22px;">${word}</span>`,
+    drillPromptSub: 'Berechne den 6-stelligen Passcode, gib ihn unten ein und klicke auf Antwort prüfen.',
+    drillCorrect: (code) => `✅ Richtig! Passcode <strong>${code}</strong> ist korrekt!`,
+    drillWrong: (guess, correct) => `❌ Deine Antwort: <strong>${guess||'(leer)'}</strong> — Korrekt: <strong>${correct}</strong>. Wechsle zum Analyse-Modus, um den Grund zu sehen.`,
+    letterCount: (n) => `${n} Buchstabe${n!==1?'n':''}`,
+  }
+};
+
+// ===================== CORE DATA =====================
+const VOWELS = new Set(['A','E','I','O','U']);
+const LETTER_SHAPES = {
+  A:2,B:2,C:3,D:2,E:1,F:1,G:3,H:1,I:1,J:2,K:1,L:1,M:1,N:1,O:3,
+  P:2,Q:3,R:2,S:3,T:1,U:3,V:1,W:1,X:1,Y:2,Z:1
+};
+const CAT_KEYS = ['countries','animals','natural-big','natural-small','manmade-big','manmade-small','mixed','long'];
+const SAMPLE_WORDS = [
+  'ELEPHANT','GUITAR','WALLET','HAMMER','LAPTOP','BOTTLE','FRANCE','GORILLA',
+  'CRYSTAL','WATERFALL','SKYSCRAPER','SUNFLOWER','CATHEDRAL','MOUNTAIN',
+  'DOLPHIN','UMBRELLA','KEYBOARD','TELESCOPE','CANDLE','MIRROR','PASSPORT',
+  'DINOSAUR','CALENDAR','ENVELOPE','LANTERN','SCORPION','WINDMILL','PENGUIN'
+];
+
+// ===================== STATE =====================
+let lang = 'en';
+let currentMode = 'analyze';
+let currentWord = '';
+let currentAnalysis = null;
+let selectedCat = null;
+let quizScore=0, quizTotal=0, quizStreak=0;
+let drillScore=0, drillTotal=0;
+let currentQuizQ = null;
+
+// ===================== LANG =====================
+function setLang(l) {
+  lang = l;
+  document.getElementById('langEN').classList.toggle('active', l==='en');
+  document.getElementById('langDE').classList.toggle('active', l==='de');
+  applyLang();
+  // re-render output if analysis exists
+  if (currentAnalysis) showOutput();
+}
+
+function T() { return LANG[lang]; }
+
+function applyLang() {
+  const t = T();
+  document.getElementById('header-sub').textContent = t.headerSub;
+  document.getElementById('tab-analyze').textContent = t.tabAnalyze;
+  document.getElementById('tab-quiz').textContent = t.tabQuiz;
+  document.getElementById('tab-drill').textContent = t.tabDrill;
+  document.getElementById('lbl-enter-word').textContent = t.lblEnterWord;
+  document.getElementById('wordInput').placeholder = t.wordPlaceholder;
+  document.getElementById('lbl-category').textContent = t.lblCategory;
+  document.getElementById('analyzeBtn').textContent = t.analyzeBtn;
+  document.getElementById('resetBtn').textContent = t.resetBtn;
+  document.getElementById('shortcutTip').innerHTML = t.shortcutTip;
+  document.getElementById('placeholder-text').innerHTML = t.placeholderText;
+  // categories
+  const grid = document.getElementById('categoryGrid');
+  grid.innerHTML = t.categories.map((name, i) => {
+    const key = CAT_KEYS[i];
+    const sel = selectedCat === key ? 'selected' : '';
+    return `<button class="cat-btn ${sel}" onclick="selectCat(this,'${key}')">${name}</button>`;
+  }).join('');
+  // quiz
+  document.getElementById('lbl-score').textContent = t.lblScore;
+  document.getElementById('lbl-total').textContent = t.lblTotal;
+  document.getElementById('lbl-streak').textContent = t.lblStreak;
+  document.getElementById('newQuestionBtn').textContent = t.newQuestionBtn;
+  document.getElementById('randomQuizBtn').textContent = t.randomQuizBtn;
+  document.getElementById('quiz-placeholder-text').innerHTML = t.quizPlaceholder;
+  // drill
+  document.getElementById('lbl-correct').textContent = t.lblCorrect;
+  document.getElementById('lbl-dtotal').textContent = t.lblDTotal;
+  document.getElementById('resetDrillBtn').textContent = t.resetDrillBtn;
+  document.getElementById('checkDrillBtn').textContent = t.checkDrillBtn;
+  document.getElementById('randomDrillBtn').textContent = t.randomDrillBtn;
+  document.getElementById('drill-placeholder-text').innerHTML = t.drillPlaceholder;
+  document.getElementById('drill-guess-title').textContent = t.drillGuessTitle;
+  document.getElementById('drill-entry-hint').innerHTML = t.drillEntryHint;
+  // live count
+  if (currentWord) {
+    document.getElementById('liveLetterCount').textContent = t.letterCount(currentWord.length);
+  }
+}
+
+// ===================== HELPERS =====================
+function shuffle(arr) { return [...arr].sort(()=>Math.random()-0.5); }
+function wrongNums(correct, count) {
+  return shuffle(['0','1','2','3','4','5','6','7','8','9'].filter(x=>x!==String(correct))).slice(0,count);
+}
+function wrongBinary(correct) {
+  const results = new Set();
+  let attempts=0;
+  while(results.size<3 && attempts<60) {
+    let w = correct.split('').map(c=>Math.random()<0.35?(c==='A'?'B':'A'):c).join('');
+    if(w!==correct) results.add(w);
+    attempts++;
+  }
+  while(results.size<3) results.add('ABABAB'.slice(0,correct.length));
+  return [...results].slice(0,3);
+}
+function wrongVowelPos(correct) {
+  const str = correct.slice(0,2).join(', ')||'–';
+  return ['2, 3','1, 4','3, 5'].filter(x=>x!==str).slice(0,3);
+}
+
+// ===================== ANALYSIS =====================
+function computeAnalysis(word) {
+  const n = word.length;
+  const digit1 = n<=9?n:(n===10?0:(n===11?1:2));
+  const shapeCode = LETTER_SHAPES[word[0]]||0;
+  const vcArr = word.split('').map(c=>VOWELS.has(c)?'V':'C');
+  const firstType = vcArr[0];
+  const abSeq = vcArr.map(t=>t===firstType?'A':'B').join('');
+  const vowelPos = [];
+  word.split('').forEach((c,i)=>{if(VOWELS.has(c))vowelPos.push(i+1);});
+  const v1=vowelPos[0]||0, v2=vowelPos[1]||0, v3=vowelPos[2]||0;
+  const passcode = `${digit1}${shapeCode}${v1}${v2}${v3}0`;
+  return {word,n,digit1,shapeCode,vcSequence:vcArr.join(''),abSequence:abSeq,
+    vowelPosList:vowelPos,v1,v2,v3,passcode,vcArr};
+}
+
+function analyzeWord() {
+  const raw = document.getElementById('wordInput').value.trim().toUpperCase().replace(/[^A-Z]/g,'');
+  if(!raw||raw.length<2){alert(lang==='de'?'Bitte gib ein gültiges Wort ein (min. 2 Buchstaben).':'Please enter a valid word (at least 2 letters).');return;}
+  currentWord=raw;
+  currentAnalysis=computeAnalysis(raw);
+  showOutput();
+}
+
+function showOutput() {
+  const a=currentAnalysis; const word=a.word; const t=T();
+  document.getElementById('placeholder').classList.add('hidden');
+  document.getElementById('analyzeOutput').classList.remove('hidden');
+
+  // STAT CARDS
+  const sn = t.shapeNames[a.shapeCode];
+  document.getElementById('statCards').innerHTML = `
+    <div class="analysis-card">
+      <div class="card-title">${t.cardLetters}</div>
+      <div class="card-value">${a.n}</div>
+      <div class="card-sub">${t.cardLettersSub(a.n,a.digit1)}</div>
+    </div>
+    <div class="analysis-card">
+      <div class="card-title">${t.cardFirst}</div>
+      <div class="card-value">${word[0]}</div>
+      <div class="card-sub">${t.cardFirstSub(a.shapeCode,sn)}</div>
+    </div>
+    <div class="analysis-card">
+      <div class="card-title">${t.cardVowels}</div>
+      <div class="card-value">${a.vowelPosList.length}</div>
+      <div class="card-sub">${t.cardVowelsSub(a.vowelPosList.join(', '))}</div>
+    </div>
+    <div class="analysis-card">
+      <div class="card-title">${t.cardPasscode}</div>
+      <div class="card-value" style="font-size:22px;letter-spacing:3px">${a.passcode}</div>
+      <div class="card-sub">${t.cardPasscodeSub}</div>
+    </div>
+  `;
+
+  // PASSCODE
+  document.getElementById('passcode-title').textContent = t.passcodeTitle;
+  document.getElementById('passcode-hint-label').textContent = t.passcodeHintLabel;
+  const digits = a.passcode.split('');
+  document.getElementById('passcodeDigits').innerHTML = digits.map((d,i)=>`
+    <div class="passcode-digit">
+      <div class="digit-box ${d!=='0'||i===0?'active':''}">${d}</div>
+      <div class="digit-label">${t.digitLabels[i]}</div>
+    </div>
+  `).join('');
+  document.getElementById('passcodeString').textContent = a.passcode;
+
+  // BINARY
+  document.getElementById('binary-title').textContent = t.binaryTitle;
+  document.getElementById('binarySeq').innerHTML = word.split('').map((c,i)=>{
+    const type=a.vcArr[i]; const ab=a.abSequence[i];
+    return `<div class="binary-letter">
+      <div class="binary-badge ${type}">${type}</div>
+      <div class="binary-ab">${ab}</div>
+      <div class="binary-char">${c}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('bin-seq-label').textContent = t.binSeqLabel;
+  document.getElementById('binaryString').textContent = a.abSequence;
+  document.getElementById('bin-start-label').textContent = t.binStartLabel;
+  document.getElementById('binaryStart').textContent = `${a.vcArr[0]} = A`;
+
+  // VOICE
+  document.getElementById('voice-title').textContent = t.voiceTitle;
+  document.getElementById('voice-hint').innerHTML = t.voiceHint;
+  const voiceNum = parseInt(a.passcode.slice(0,4));
+  const tpl = t.voiceTemplates[Math.floor(Math.random()*t.voiceTemplates.length)];
+  document.getElementById('voiceSentence').innerHTML = '"'+tpl.replace('{n}',`<span class="number-highlight">${voiceNum}</span>`)+'"';
+
+  // SHAPE
+  document.getElementById('shape-title').textContent = t.shapeTitle;
+  document.getElementById('shape-hint').innerHTML = t.shapeHint;
+  document.getElementById('shapeDisplay').innerHTML = [1,2,3].map(s=>`
+    <div class="shape-pill ${s===a.shapeCode?'active-'+s:''}">
+      ${t.shapePills[s]}<br><span style="font-size:10px;opacity:0.7">${t.shapePillSub(s)}</span>
+    </div>
+  `).join('');
+
+  // VOWEL POSITIONS
+  document.getElementById('vowel-title').textContent = t.vowelTitle;
+  document.getElementById('vowel-hint').innerHTML = t.vowelHint;
+  document.getElementById('vowelPositions').innerHTML =
+    word.split('').map((c,i)=>`
+      <div class="pos-badge ${VOWELS.has(c)?'is-vowel':''}" title="${c} pos ${i+1}">${i+1}</div>
+    `).join('') +
+    `<div style="width:100%;font-size:12px;color:var(--muted);margin-top:6px;">${t.vowelPosSuffix(a.vowelPosList)}</div>`;
+
+  // BREAKDOWN
+  document.getElementById('breakdown-title').textContent = t.breakdownTitle;
+  document.getElementById('breakdownHead').innerHTML = `<tr>${t.breakdownCols.map(c=>`<th>${c}</th>`).join('')}</tr>`;
+  document.getElementById('breakdownBody').innerHTML = word.split('').map((c,i)=>{
+    const type=a.vcArr[i]; const ab=a.abSequence[i];
+    const typeLabel = type==='V'?t.tagVowel:t.tagConsonant;
+    const tagClass = type==='V'?'tag-v':'tag-c';
+    return `<tr>
+      <td style="color:var(--muted)">${i+1}</td>
+      <td style="font-weight:700;font-size:15px;letter-spacing:2px">${c}</td>
+      <td><span class="tag ${tagClass}">${typeLabel}</span></td>
+      <td style="color:var(--muted)">${i+1}</td>
+      <td style="font-weight:700;color:${ab==='A'?'#3b82f6':'#a855f7'}">${ab}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ===================== MODE =====================
+function setMode(mode) {
+  currentMode=mode;
+  ['analyze','quiz','drill'].forEach(m=>{
+    document.getElementById('tab-'+m).classList.toggle('active',m===mode);
+    const el=document.getElementById(m+'Output');
+    if(el) el.classList.add('hidden');
+  });
+  document.getElementById('placeholder').classList.add('hidden');
+  if(mode==='analyze'){
+    if(currentAnalysis) document.getElementById('analyzeOutput').classList.remove('hidden');
+    else document.getElementById('placeholder').classList.remove('hidden');
+  }
+  if(mode==='quiz') document.getElementById('quizOutput').classList.remove('hidden');
+  if(mode==='drill') document.getElementById('drillOutput').classList.remove('hidden');
+}
+
+// ===================== CATEGORY =====================
+function selectCat(btn,cat){
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedCat=cat;
+}
+
+// ===================== RESET =====================
+function resetAll(){
+  document.getElementById('wordInput').value='';
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('selected'));
+  selectedCat=null; currentWord=''; currentAnalysis=null;
+  document.getElementById('placeholder').classList.remove('hidden');
+  document.getElementById('analyzeOutput').classList.add('hidden');
+  document.getElementById('liveLetterCount').textContent='';
+  document.getElementById('shortcutTip').classList.add('hidden');
+}
+
+// ===================== LIVE COUNT =====================
+function onWordChange(){
+  const raw=document.getElementById('wordInput').value.trim().toUpperCase().replace(/[^A-Z]/g,'');
+  const el=document.getElementById('liveLetterCount');
+  if(raw.length>0){
+    el.textContent=T().letterCount(raw.length);
+    document.getElementById('shortcutTip').classList.remove('hidden');
+  } else {
+    el.textContent='';
+    document.getElementById('shortcutTip').classList.add('hidden');
+  }
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter' && document.activeElement===document.getElementById('wordInput')){
+    analyzeWord();
+    if(currentMode==='quiz'&&currentAnalysis) buildQuizFromAnalysis();
+    if(currentMode==='drill'&&currentAnalysis) showDrillPrompt();
+  }
+});
+
+// ===================== QUIZ =====================
+function buildQuizFromAnalysis(){
+  const a=currentAnalysis; const word=a.word; const t=T();
+  const sn=t.shapeNames[a.shapeCode];
+  const qTypes=[
+    ()=>({
+      q:t.quizQ1(word,a.digit1),
+      correct:String(a.digit1),
+      options:shuffle([String(a.digit1),...wrongNums(a.digit1,3)]),
+      explain:t.quizQ1Explain(word,a.digit1)
+    }),
+    ()=>({
+      q:t.quizQ2(word),
+      correct:String(a.shapeCode),
+      options:shuffle([String(a.shapeCode),...['1','2','3'].filter(x=>x!==String(a.shapeCode))]),
+      explain:t.quizQ2Explain(word,a.shapeCode,sn)
+    }),
+    ()=>({
+      q:t.quizQ3(word),
+      correct:a.abSequence,
+      options:shuffle([a.abSequence,...wrongBinary(a.abSequence)]),
+      explain:t.quizQ3Explain(a.vcSequence,a.abSequence)
+    }),
+    ()=>({
+      q:t.quizQ4(word),
+      correct:a.vowelPosList.slice(0,2).join(', ')||'–',
+      options:shuffle([a.vowelPosList.slice(0,2).join(', ')||'–',...wrongVowelPos(a.vowelPosList)]),
+      explain:t.quizQ4Explain(word,a.vowelPosList.join(', '))
+    }),
+    ()=>({
+      q:t.quizQ5(word),
+      correct:VOWELS.has(word[0])?t.answerVowel:t.answerConsonant,
+      options:[t.answerVowel,t.answerConsonant],
+      explain:t.quizQ5Explain(word[0],VOWELS.has(word[0])?t.answerVowel:t.answerConsonant)
+    })
+  ];
+  const qDef=qTypes[Math.floor(Math.random()*qTypes.length)]();
+  currentQuizQ=qDef;
+  document.getElementById('quizArea').innerHTML=`
+    <div class="quiz-question">${qDef.q}</div>
+    <div class="quiz-options">
+      ${qDef.options.map(o=>`<button class="quiz-opt" onclick="answerQuiz(this,'${o.replace(/'/g,"\\'")}')">${o}</button>`).join('')}
+    </div>
+    <div class="feedback-box" id="qFeedback"></div>
+    <button class="next-btn" id="qNext" onclick="randomQuiz()">${t.nextBtn}</button>
+  `;
+}
+
+function randomQuiz(){
+  const word=SAMPLE_WORDS[Math.floor(Math.random()*SAMPLE_WORDS.length)];
+  currentWord=word; currentAnalysis=computeAnalysis(word);
+  document.getElementById('wordInput').value=word;
+  document.getElementById('liveLetterCount').textContent=T().letterCount(word.length);
+  buildQuizFromAnalysis();
+}
+
+function answerQuiz(btn, answer){
+  if(!currentQuizQ)return;
+  document.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);
+  const correct=currentQuizQ.correct; const t=T();
+  const fb=document.getElementById('qFeedback');
+  if(answer===correct){
+    btn.classList.add('correct');
+    quizScore++; quizStreak++;
+    fb.className='feedback-box show ok';
+    fb.innerHTML=t.feedbackCorrect(currentQuizQ.explain);
+  } else {
+    btn.classList.add('wrong');
+    quizStreak=0;
+    document.querySelectorAll('.quiz-opt').forEach(b=>{if(b.textContent.trim()===correct)b.classList.add('correct');});
+    fb.className='feedback-box show err';
+    fb.innerHTML=t.feedbackWrong(currentQuizQ.explain);
+  }
+  quizTotal++;
+  document.getElementById('qScore').textContent=quizScore;
+  document.getElementById('qTotal').textContent=quizTotal;
+  document.getElementById('qStreak').textContent=quizStreak;
+  document.getElementById('qNext').classList.add('show');
+}
+
+// ===================== DRILL =====================
+function showDrillPrompt(){
+  const t=T();
+  document.getElementById('drillArea').innerHTML=`
+    <div style="font-size:15px;font-weight:600;">${t.drillPrompt(currentWord)}</div>
+    <div style="color:var(--muted);font-size:13px;">${t.drillPromptSub}</div>
+  `;
+  ['d1','d2','d3','d4','d5','d6'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('drillFeedback').className='feedback-box';
+}
+
+function randomDrill(){
+  const word=SAMPLE_WORDS[Math.floor(Math.random()*SAMPLE_WORDS.length)];
+  currentWord=word; currentAnalysis=computeAnalysis(word);
+  document.getElementById('wordInput').value=word;
+  document.getElementById('liveLetterCount').textContent=T().letterCount(word.length);
+  showDrillPrompt();
+}
+
+function drillCheck(){
+  if(!currentAnalysis){alert(lang==='de'?'Bitte zuerst ein Wort eingeben!':'Please enter a word first!');return;}
+  const guess=['d1','d2','d3','d4','d5','d6'].map(id=>document.getElementById(id).value.trim()).join('');
+  const correct=currentAnalysis.passcode; const t=T();
+  const fb=document.getElementById('drillFeedback');
+  drillTotal++;
+  if(guess===correct){
+    drillScore++;
+    fb.className='feedback-box show ok';
+    fb.innerHTML=t.drillCorrect(correct);
+  } else {
+    fb.className='feedback-box show err';
+    fb.innerHTML=t.drillWrong(guess,correct);
+  }
+  document.getElementById('dScore').textContent=drillScore;
+  document.getElementById('dTotal').textContent=drillTotal;
+}
+
+function resetDrill(){
+  drillScore=0; drillTotal=0;
+  document.getElementById('dScore').textContent=0;
+  document.getElementById('dTotal').textContent=0;
+  document.getElementById('drillFeedback').className='feedback-box';
+}
+
+// ===================== INIT =====================
+applyLang();
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(reg => console.log('SW registered:', reg.scope))
+        .catch(err => console.error('SW error:', err));
+    });
+  }
+</script>
+</body>
+</html>

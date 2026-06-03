@@ -879,12 +879,17 @@ function showOutput() {
 // ===================== MODE =====================
 function setMode(mode) {
   currentMode=mode;
-  ['analyze','quiz','drill'].forEach(m=>{
+  ['analyze','quiz','drill','guide'].forEach(m=>{
     document.getElementById('tab-'+m).classList.toggle('active',m===mode);
     const el=document.getElementById(m+'Output');
     if(el) el.classList.add('hidden');
   });
   document.getElementById('placeholder').classList.add('hidden');
+  document.getElementById('guideSection').style.display='none';
+  if(mode==='guide'){
+    document.getElementById('guideSection').style.display='block';
+    return;
+  }
   if(mode==='analyze'){
     if(currentAnalysis) document.getElementById('analyzeOutput').classList.remove('hidden');
     else document.getElementById('placeholder').classList.remove('hidden');

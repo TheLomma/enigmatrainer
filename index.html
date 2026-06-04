@@ -320,33 +320,13 @@
     .header-right { width: 100%; }
   }
   .hidden { display: none !important; }
-
-  footer {
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    padding: 14px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    font-size: 12px;
-    color: var(--muted);
-  }
-  footer a {
-    color: var(--accent);
-    text-decoration: none;
-    font-weight: 600;
-  }
-  footer a:hover { text-decoration: underline; }
-  .footer-sep { color: var(--border); }
 </style>
 </head>
 <body>
 
 <header>
   <div>
-    <div class="logo">BLETCHLEY <span style="color:var(--accent)">✦</span> PARK</div>
+    <div class="logo">ENIGMA <span style="color:var(--accent)">✦</span> TRAINER</div>
     <div id="header-sub" style="font-size:11px;color:var(--muted);margin-top:2px;"></div>
   </div>
   <div class="header-right">
@@ -532,7 +512,6 @@ const LANG = {
     shapePillSub: c => `(Code: ${c})`,
     vowelPosSuffix: (list) => `Vowel positions: <strong style="color:#a855f7">${list.join(' → ')}</strong>`,
     tagVowel: 'Vowel', tagConsonant: 'Consonant',
-    footerBuy: 'Available at',
     voiceTemplates: [
       'Hmm… there are over {n} thousand words in the English language… and you\'re thinking of one of them.',
       'You know, in just {n} seconds the human brain processes incredible amounts of information…',
@@ -610,7 +589,6 @@ const LANG = {
     shapePillSub: c => `(Code: ${c})`,
     vowelPosSuffix: (list) => `Vokal-Positionen: <strong style="color:#a855f7">${list.join(' → ')}</strong>`,
     tagVowel: 'Vokal', tagConsonant: 'Konsonant',
-    footerBuy: 'Kaufen unter',
     voiceTemplates: [
       'Hmm… es gibt über {n} tausend Wörter im Deutschen… und du denkst gerade an eines davon.',
       'Wusstest du, dass das menschliche Gehirn in nur {n} Sekunden unglaubliche Mengen an Informationen verarbeitet?',
@@ -728,7 +706,6 @@ function applyLang() {
   // live count
   if (currentWord) {
     document.getElementById('liveLetterCount').textContent = t.letterCount(currentWord.length);
-  document.getElementById('footer-buy-label').textContent = t.footerBuy;
   }
 }
 
@@ -879,17 +856,12 @@ function showOutput() {
 // ===================== MODE =====================
 function setMode(mode) {
   currentMode=mode;
-  ['analyze','quiz','drill','guide'].forEach(m=>{
+  ['analyze','quiz','drill'].forEach(m=>{
     document.getElementById('tab-'+m).classList.toggle('active',m===mode);
     const el=document.getElementById(m+'Output');
     if(el) el.classList.add('hidden');
   });
   document.getElementById('placeholder').classList.add('hidden');
-  document.getElementById('guideSection').style.display='none';
-  if(mode==='guide'){
-    document.getElementById('guideSection').style.display='block';
-    return;
-  }
   if(mode==='analyze'){
     if(currentAnalysis) document.getElementById('analyzeOutput').classList.remove('hidden');
     else document.getElementById('placeholder').classList.remove('hidden');
@@ -1065,20 +1037,8 @@ function resetDrill(){
 applyLang();
 </script>
 
-<footer id="app-footer">
-  <span id="footer-version">v. 1.1</span>
-  <span class="footer-sep">|</span>
-  <span id="footer-buy-label"></span>&nbsp;<a href="https://www.enigmaofthemind.com/" target="_blank">enigmaofthemind.com</a>
-</footer>
-
 <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then(r => console.log('SW registered:', r.scope))
-        .catch(e => console.warn('SW error:', e));
-    });
-  }
+if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/service-worker.js"));
 </script>
 </body>
 </html>

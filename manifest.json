@@ -2,19 +2,19 @@
   "name": "Bletchley Park",
   "short_name": "Bletchley",
   "description": "Übungs-Tool für das Enigma-Zaubersystem",
-  "start_url": "/",
+  "start_url": ".",
   "display": "standalone",
   "background_color": "#0a0a0f",
   "theme_color": "#f5c842",
   "icons": [
     {
-      "src": "/icons/icon-192x192.png",
+      "src": "icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/icons/icon-512x512.png",
+      "src": "icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"
